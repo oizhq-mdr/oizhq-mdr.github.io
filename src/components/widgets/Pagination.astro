@@ -1,0 +1,76 @@
+---
+import type { Page } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  page: Page<CollectionEntry<'posts'>>
+}
+
+const { page } = Astro.props
+
+const prevUrl = page.url.prev === '/blog/page/1/' ? '/blog/' : page.url.prev
+const nextUrl = page.url.next
+---
+
+{
+  (page.lastPage > 1) && (
+    <nav class="pagination">
+      <div class="pagination-links">
+        {prevUrl ? (
+          <a href={prevUrl} class="pagination-link">
+            ← Previous
+          </a>
+        ) : (
+          <span class="pagination-link disabled">← Previous</span>
+        )}
+        <span class="pagination-info font-features">
+          {page.currentPage} / {page.lastPage}
+        </span>
+        {nextUrl ? (
+          <a href={nextUrl} class="pagination-link">
+            Next →
+          </a>
+        ) : (
+          <span class="pagination-link disabled">Next →</span>
+        )}
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    margin-top: 2rem;
+  }
+
+  .pagination-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pagination-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: opacity 0.15s ease-out;
+  }
+
+  .pagination-link.disabled {
+    color: var(--text-tertiary);
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pagination-link:not(.disabled):hover {
+      opacity: 0.6;
+    }
+  }
+
+  .pagination-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    letter-spacing: var(--spacing-s);
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+import IndexLayout from '@/layouts/IndexLayout.astro'
+import About from '@/components/widgets/About.astro'
+import PostList from '@/components/widgets/PostList.astro'
+import { themeConfig } from '@/config'
+import { getSortedFilteredPosts } from '@/utils/draft'
+
+const posts = await getSortedFilteredPosts()
+const recentPosts = posts.slice(0, 3)
+---
+
+<IndexLayout title={themeConfig.site.title} description={themeConfig.site.description}>
+  <About />
+  <main>
+    <PostList posts={recentPosts} />
+    {posts.length > 3 && (
+      <div class="see-more-container">
+        <a href="/blog/" class="see-more-link">
+          See more posts
+        </a>
+      </div>
+    )}
+  </main>
+</IndexLayout>
+
+<style>
+  .see-more-container {
+    height: 2.75rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: -3rem;
+  }
+
+  .see-more-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: opacity 0.15s ease-out;
+    letter-spacing: var(--spacing-m);
+    font-weight: var(--font-weight-light);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .see-more-link:hover {
+      opacity: 0.6;
+    }
+  }
+</style>

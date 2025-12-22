@@ -1,0 +1,22 @@
+---
+import IndexLayout from '@/layouts/IndexLayout.astro'
+import { getEntry, render } from 'astro:content'
+import { themeConfig } from '@/config'
+
+const publicationEntry = await getEntry('publication', 'publication')
+const { Content } = publicationEntry ? await render(publicationEntry) : { Content: null }
+---
+
+<IndexLayout title={`Publication - ${themeConfig.site.title}`} description={themeConfig.site.description}>
+  <main>
+    <div class="publication-page prose">
+      {Content && <Content />}
+    </div>
+  </main>
+</IndexLayout>
+
+<style>
+  .publication-page {
+    max-width: 100%;
+  }
+</style>

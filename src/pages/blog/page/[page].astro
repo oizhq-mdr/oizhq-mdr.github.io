@@ -1,0 +1,27 @@
+---
+import IndexLayout from '@/layouts/IndexLayout.astro'
+import PostList from '@/components/widgets/PostList.astro'
+import Pagination from '@/components/widgets/Pagination.astro'
+import { themeConfig } from '@/config'
+import { getSortedFilteredPosts } from '@/utils/draft'
+
+export async function getStaticPaths({ paginate }) {
+  const posts = await getSortedFilteredPosts()
+  const postsPerPage = themeConfig.general.postsPerPage
+
+  if (postsPerPage === 0) {
+    return []
+  }
+
+  return paginate(posts, { pageSize: postsPerPage })
+}
+
+const { page } = Astro.props
+---
+
+<IndexLayout title={`Blog - Page ${page.currentPage} - ${themeConfig.site.title}`} description={themeConfig.site.description}>
+  <main>
+    <PostList posts={page.data} />
+    <Pagination page={page} />
+  </main>
+</IndexLayout>

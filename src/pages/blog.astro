@@ -1,0 +1,53 @@
+---
+import IndexLayout from '@/layouts/IndexLayout.astro'
+import PostList from '@/components/widgets/PostList.astro'
+import Pagination from '@/components/widgets/Pagination.astro'
+import { themeConfig } from '@/config'
+import { getSortedFilteredPosts } from '@/utils/draft'
+
+const posts = await getSortedFilteredPosts()
+const postsPerPage = themeConfig.general.postsPerPage
+
+const displayPosts = postsPerPage > 0 ? posts.slice(0, postsPerPage) : posts
+const totalPages = postsPerPage > 0 ? Math.ceil(posts.length / postsPerPage) : 1
+
+const page = {
+  data: displayPosts,
+  currentPage: 1,
+  lastPage: totalPages,
+  url: {
+    prev: undefined,
+    next: totalPages > 1 ? '/blog/page/2/' : undefined
+  }
+}
+---
+
+<IndexLayout title={`Blog - ${themeConfig.site.title}`} description={themeConfig.site.description}>
+  <main>
+    {posts.length === 0 ? (
+      <div class="no-posts">
+        <p>No posts yet.</p>
+      </div>
+    ) : (
+      <>
+        <PostList posts={displayPosts} />
+        <Pagination page={page} />
+      </>
+    )}
+  </main>
+</IndexLayout>
+
+<style>
+  .no-posts {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 20rem;
+    color: var(--text-secondary);
+  }
+
+  .no-posts p {
+    font-size: var(--font-size-base);
+    letter-spacing: var(--spacing-m);
+  }
+</style>
